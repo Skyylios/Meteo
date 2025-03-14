@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en" class="w-full h-full">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <title>Tp1</title>
+</head>
+
+<body class="bg-cover bg-center bg-no-repeat h-full w-full"
+    style="background-image: url('images/background_flou.jpg');">
+
+    <main id="app" class="h-full w-full p-5 flex items-center justify-center text-slate-100" v-cloak>
+
+        <div v-if="vueFormulaire"
+            class="bg-black/50 p-5 lg:w-3/5 xl:w-2/4 text-xl shadow-md backdrop-blur-md flex w-full flex-col text-center">
+
+            <h1 class="py-3 text-2xl">Météo</h1>
+
+            <form method="POST">
+                <div class="lg:flex justify-center lg:gap-5">
+                    <input class="border-2 my-3 border-emerald-600 text-center text-black p-1 m-1" type="text"
+                        placeholder="ville" name="ville" v-model="ville">
+
+                    <input list="pays" class="border-2 my-3 text-black text-center border-emerald-600 p-1 m-1"
+                        placeholder="pays" name="pays">
+                    <datalist id="pays">
+                        <option v-for="contryCode in contryCodes" :value="contryCode.name">{{ contryCode.code }}
+                        </option>F
+                    </datalist>
+                </div>
+
+                <input class="bg-emerald-400 p-1 my-3 px-3 m-1 text-white cursor-pointer hover:bg-emerald-600" type="submit"
+                    @click.prevent=" rechercheVille() , changerPage()" value="Voir la météo">
+            </form>
+        </div>
+
+        <div v-if="vueMeteo"
+            class="bg-black/50 p-5 lg:w-3/5 text-xl shadow-md backdrop-blur-md flex w-full flex-col text-center items-center">
+            <h1 class="py-3 text-2xl">Météo</h1>
+            <p class="py-1"><strong>{{ meteo.name }}({{ meteo.sys.country }})</strong></p>
+            <div class="flex flex-row lg:w-full md:gap-5 justify-center ">
+                <img class="h-24 w-24" :src="icon">
+                <div class="flex flex-col gap-1 text-left justify-center">
+                    <p class="">{{ meteo.main.temp }}°C</p>
+                    <p class="text-slate-300">{{ meteo.main.temp_min }}°C ressenti</p>
+                </div>
+            </div>
+            <div class="flex flex-col justify-center md:w-full md:items-center">
+                <div class="py-2 md:flex md:flex-row md:justify-between md:w-2/5">
+                    <p class="text-emerald-300">Condition:</p>
+                    <p class="capitalize">{{ meteo.weather[0].description }}</p>
+                </div>
+                <div class="py-2 md:flex md:flex-row md:justify-between md:w-2/5">
+                    <p class="text-emerald-300">Vent:</p>
+                    <p>{{ kmH }}km/h {{ direction }}</p>
+
+                </div>
+                <div class="py-2 md:flex md:flex-row md:justify-between items-center md:w-2/5">
+                    <div class="md:text-left">
+                        <p class="text-emerald-300">Lever du soleil:</p>
+                        <p class="text-emerald-200">(heure locale)</p>
+                    </div>
+                    <p>{{ leveSoleil }}</p>
+                </div>
+                <div class="py-2 md:flex md:flex-row md:justify-between items-center md:w-2/5">
+                    <div class="md:text-left">
+                        <p class="text-emerald-300">Coucher du soleil:</p>
+                        <p class="text-emerald-200">(heure locale)</p>
+                    </div>
+                    <p>{{ coucheSoleil }}</p>
+
+                </div>
+                <div class="py-2 md:flex md:flex-row md:justify-between md:w-2/5">
+                    <p class="text-emerald-300">Fuseau horaire: </p>
+                    <p>{{ fuseaux }}</p>
+
+                </div>
+                <div class="py-2 md:flex md:flex-row md:justify-between md:w-2/5">
+                    <p class="text-emerald-300" v-if="meteo.weather[0].main === 'Rain'">Accumulation de pluie:</p>
+                    <p v-if="meteo.weather[0].main === 'Rain'"> {{ meteo.rain['1h'] }} mm</p>
+
+                </div>
+                <div class="py-2 md:flex md:flex-row md:justify-between md:w-2/5">
+                    <p class="text-emerald-300" v-if="meteo.weather[0].main === 'Snow'">Accumulation de neige:</p>
+                    <p v-if="meteo.weather[0].main === 'Snow'"> {{ meteo.snow['1h'] }} mm</p>
+
+                </div>
+            </div>
+            <button class="bg-emerald-400 p-1 my-3 px-3 m-1 text-white hover:bg-emerald-600"
+                @click="changerPage()">Retour</button>
+        </div>
+    </main>
+
+    <script type="module" src="app.js"></script>
+</body>
+
+</html>
